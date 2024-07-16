@@ -11,6 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import android.os.CountDownTimer;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private int mVisibleDice;
     private Dice[] mDice;
     private ImageView[] mDiceImageViews;
+    private Menu mMenu;
+    private CountDownTimer mTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.appbar_menu, menu);
+        mMenu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -81,8 +85,40 @@ public class MainActivity extends AppCompatActivity {
             showDice();
             return true;
         }
+        else if (item.getItemId() == R.id.action_stop) {
+            mTimer.cancel();
+            item.setVisible(false);
+            return true;
+        }
+        else if (item.getItemId() == R.id.action_roll) {
+            rollDice();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void rollDice() {
+        mMenu.findItem(R.id.action_stop).setVisible(true);
+
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+
+        mTimer = new CountDownTimer(2000, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                for (int i = 0; i < mVisibleDice; i++) {
+                    mDice[i].roll();
+                }
+                showDice();
+            }
+
+            @Override
+            public void onFinish() {
+                mMenu.findItem(R.id.action_stop).setVisible(false);
+            }
+        }.start();
     }
 
     private void changeDiceVisibility(int numVisible) {
