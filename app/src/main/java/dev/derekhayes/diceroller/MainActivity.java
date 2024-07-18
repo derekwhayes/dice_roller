@@ -1,5 +1,6 @@
 package dev.derekhayes.diceroller;
 
+import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -16,6 +17,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -30,7 +32,10 @@ public class MainActivity extends AppCompatActivity implements RollLengthDialogF
     private CountDownTimer mTimer;
     private long mTimerLength = 2000;
     private int mCurrentDie;
+    private int mInitX;
+    private int mInitY;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +67,34 @@ public class MainActivity extends AppCompatActivity implements RollLengthDialogF
             registerForContextMenu(mDiceImageViews[i]);
             mDiceImageViews[i].setTag(i);
         }
+
+        mDiceImageViews[0].setOnTouchListener((v, event) -> {
+            int action = event.getAction();
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    mInitX = (int) event.getX();
+                    mInitY = (int) event.getY();
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    int x = (int) event.getX();
+                    int y = (int) event.getY();
+
+                    if (Math.abs(x - mInitX) >= 100 || Math.abs(y - mInitY) >= 100) {
+                        if (x > mInitX || y > mInitY) {
+                            mDice[0].addOne();
+                        }
+                        else {
+                            mDice[0].subtractOne();
+                        }
+                        showDice();
+                        mInitX = x;
+                        mInitY = y;
+                    }
+
+                    return true;
+            }
+            return false;
+        });
     }
 
     @Override
