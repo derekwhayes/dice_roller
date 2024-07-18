@@ -17,7 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RollLengthDialogFragment.OnRollLengthSelectedListener {
 
     public static final int MAX_DICE = 3;
 
@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView[] mDiceImageViews;
     private Menu mMenu;
     private CountDownTimer mTimer;
+    private long mTimerLength = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onRollLengthClick(int which) {
+        mTimerLength = 1000L * (which + 1);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_one) {
             changeDiceVisibility(1);
@@ -94,6 +100,11 @@ public class MainActivity extends AppCompatActivity {
             rollDice();
             return true;
         }
+        else if (item.getItemId() == R.id.action_roll_length) {
+            RollLengthDialogFragment dialog = new RollLengthDialogFragment();
+            dialog.show(getSupportFragmentManager(), "rollLengthDialog");
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -105,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             mTimer.cancel();
         }
 
-        mTimer = new CountDownTimer(2000, 100) {
+        mTimer = new CountDownTimer(mTimerLength, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 for (int i = 0; i < mVisibleDice; i++) {
