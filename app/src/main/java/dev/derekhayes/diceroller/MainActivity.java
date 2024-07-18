@@ -61,40 +61,40 @@ public class MainActivity extends AppCompatActivity implements RollLengthDialogF
 
         showDice();
 
-        registerForContextMenu(mDiceImageViews[0]);
+//        registerForContextMenu(mDiceImageViews[0]);
 
-        for(int i = 0; i < mDiceImageViews.length; i++) {
-            registerForContextMenu(mDiceImageViews[i]);
-            mDiceImageViews[i].setTag(i);
-        }
+//        for(int i = 0; i < mDiceImageViews.length; i++) {
+//            registerForContextMenu(mDiceImageViews[i]);
+//            mDiceImageViews[i].setTag(i);
+//        }
 
-        mDiceImageViews[0].setOnTouchListener((v, event) -> {
-            int action = event.getAction();
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
-                    mInitX = (int) event.getX();
-                    mInitY = (int) event.getY();
-                    return true;
-                case MotionEvent.ACTION_MOVE:
-                    int x = (int) event.getX();
-                    int y = (int) event.getY();
-
-                    if (Math.abs(x - mInitX) >= 100 || Math.abs(y - mInitY) >= 100) {
-                        if (x > mInitX || y > mInitY) {
-                            mDice[0].addOne();
-                        }
-                        else {
-                            mDice[0].subtractOne();
-                        }
-                        showDice();
-                        mInitX = x;
-                        mInitY = y;
-                    }
-
-                    return true;
-            }
-            return false;
-        });
+//        mDiceImageViews[0].setOnTouchListener((v, event) -> {
+//            int action = event.getAction();
+//            switch (action) {
+//                case MotionEvent.ACTION_DOWN:
+//                    mInitX = (int) event.getX();
+//                    mInitY = (int) event.getY();
+//                    return true;
+//                case MotionEvent.ACTION_MOVE:
+//                    int x = (int) event.getX();
+//                    int y = (int) event.getY();
+//
+//                    if (Math.abs(x - mInitX) >= 100 || Math.abs(y - mInitY) >= 100) {
+//                        if (x > mInitX || y > mInitY) {
+//                            mDice[0].addOne();
+//                        }
+//                        else {
+//                            mDice[0].subtractOne();
+//                        }
+//                        showDice();
+//                        mInitX = x;
+//                        mInitY = y;
+//                    }
+//
+//                    return true;
+//            }
+//            return false;
+//        });
     }
 
     @Override
