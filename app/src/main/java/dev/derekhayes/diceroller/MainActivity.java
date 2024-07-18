@@ -12,7 +12,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import android.os.CountDownTimer;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements RollLengthDialogF
     private Menu mMenu;
     private CountDownTimer mTimer;
     private long mTimerLength = 2000;
+    private int mCurrentDie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,13 @@ public class MainActivity extends AppCompatActivity implements RollLengthDialogF
         mVisibleDice = MAX_DICE;
 
         showDice();
+
+        registerForContextMenu(mDiceImageViews[0]);
+
+        for(int i = 0; i < mDiceImageViews.length; i++) {
+            registerForContextMenu(mDiceImageViews[i]);
+            mDiceImageViews[i].setTag(i);
+        }
     }
 
     @Override
@@ -142,5 +152,34 @@ public class MainActivity extends AppCompatActivity implements RollLengthDialogF
         for (int i = numVisible; i < MAX_DICE; i++) {
             mDiceImageViews[i].setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        super.onCreateContextMenu(menu, v, menuInfo);
+        mCurrentDie = (int) v.getTag();
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.add_one) {
+            mDice[mCurrentDie].addOne();
+            showDice();
+            return true;
+        }
+        else if (item.getItemId() == R.id.subtract_one) {
+            mDice[mCurrentDie].subtractOne();
+            showDice();
+            return true;
+        }
+        else if (item.getItemId() == R.id.roll) {
+            rollDice();
+            return true;
+        }
+
+        return super.onContextItemSelected(item);
     }
 }
